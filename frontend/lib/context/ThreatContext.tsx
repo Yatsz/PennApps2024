@@ -27,12 +27,12 @@ export function ThreatProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const checkForNewThreats = async () => {
+      if (currentThreat) return; // Don't check for new threats if there's an unviewed threat
+
       try {
-        console.log('checking for new threats')
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/is_new_threat`);
         const data = await response.json();
         if (data !== false) {
-          console.log('success')
           setCurrentThreat(data);
         }
       } catch (error) {
@@ -43,10 +43,14 @@ export function ThreatProvider({ children }: { children: ReactNode }) {
     const intervalId = setInterval(checkForNewThreats, 1000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [currentThreat]);
 
   return (
-    <ThreatContext.Provider value={{ currentThreat, setCurrentThreat, clearCurrentThreat }}>
+    <ThreatContext.Provider value={{ 
+      currentThreat, 
+      setCurrentThreat, 
+      clearCurrentThreat
+    }}>
       {children}
     </ThreatContext.Provider>
   );

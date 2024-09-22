@@ -41,7 +41,7 @@ export default function Sidebar() {
 
         return {
           id: index + 1,
-          floor: `Floor ${item.camera_num}`, // Assuming floor is derived from camera number
+          floor: `Levine Hall Floor 1`, // Assuming floor is derived from camera number
           camera_num: item.camera_num,
           severity: item.severity as 'HIGH' | 'MEDIUM' | 'LOW',
           time_ago: `${timeDiff}m ago`,
