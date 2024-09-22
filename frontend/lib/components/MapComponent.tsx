@@ -105,7 +105,7 @@ function MapContent() {
             floor={selectedAlert.floor}
             camNum={selectedAlert.camera_num}
             severity={selectedAlert.severity}
-            videoUrl="/banana.mp4" // Replace with actual video URL
+            frame={selectedAlert.frame}
           />
         </div>
       )}

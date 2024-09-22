@@ -6,6 +6,7 @@ interface AlertData {
   camera_num: number;
   severity: 'HIGH' | 'MEDIUM' | 'LOW';
   time_ago: string;
+  frame: string;
 }
 
 interface AlertContextType {

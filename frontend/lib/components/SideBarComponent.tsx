@@ -7,19 +7,10 @@ interface AlertData {
   camera_num: number
   severity: 'HIGH' | 'MEDIUM' | 'LOW'
   time_ago: string
+  frame: string
 }
 
-const mockAlerts: AlertData[] = [
-  { id: 1, floor: 'Levine Floor 2', camera_num: 3, severity: 'HIGH', time_ago: '10m ago' },
-  { id: 2, floor: 'Levine Floor 2', camera_num: 1, severity: 'HIGH', time_ago: '10m ago' },
-  { id: 3, floor: 'Levine Floor 2', camera_num: 3, severity: 'HIGH', time_ago: '10m ago' },
-  { id: 4, floor: 'Levine Floor 2', camera_num: 3, severity: 'MEDIUM', time_ago: '10m ago' },
-  { id: 5, floor: 'Levine Floor 2', camera_num: 2, severity: 'MEDIUM', time_ago: '10m ago' },
-  { id: 6, floor: 'Levine Floor 2', camera_num: 3, severity: 'MEDIUM', time_ago: '10m ago' },
-  { id: 7, floor: 'Levine Floor 2', camera_num: 1, severity: 'LOW', time_ago: '10m ago' },
-  { id: 8, floor: 'Levine Floor 2', camera_num: 1, severity: 'LOW', time_ago: '10m ago' },
-  { id: 9, floor: 'Levine Floor 2', camera_num: 3, severity: 'LOW', time_ago: '10m ago' },
-]
+
 
 export default function Sidebar() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -54,6 +45,7 @@ export default function Sidebar() {
           camera_num: item.camera_num,
           severity: item.severity as 'HIGH' | 'MEDIUM' | 'LOW',
           time_ago: `${timeDiff}m ago`,
+          frame: item.frame,
         };
       });
 
@@ -135,6 +127,7 @@ export default function Sidebar() {
               floor={alert.floor}
               severity={alert.severity}
               time_ago={alert.time_ago}
+              frame={alert.frame}
             />
           ))}
         </div>

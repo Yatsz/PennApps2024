@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 interface SurveillanceVideoProps {
   floor: string
   camNum: number
   severity: 'HIGH' | 'MEDIUM' | 'LOW'
-  videoUrl: string
+  frame: string
 }
 
 const severityConfig = {
@@ -13,12 +14,9 @@ const severityConfig = {
   LOW: { width: 'w-[40px]', color: 'text-[#E4D141]', border: 'border-[#E4D141]', bg: 'bg-[#FFFBD9]' }
 }
 
-export default function SurveillanceVideo({ floor, camNum, severity, videoUrl }: SurveillanceVideoProps) {
-  const [videoSource, setVideoSource] = useState<string | undefined>(undefined);
+export default function SurveillanceVideo({ floor, camNum, severity, frame }: SurveillanceVideoProps) {
 
-  useEffect(() => {
-    setVideoSource(videoUrl);
-  }, [videoUrl]);
+ 
 
   const { width, color, border, bg } = severityConfig[severity];
 
@@ -60,22 +58,12 @@ export default function SurveillanceVideo({ floor, camNum, severity, videoUrl }:
           </div>
         </div>
         <div className="relative w-[417px] h-[258px] mx-auto overflow-hidden">
-          {videoSource && (
-            <video 
-              src={videoSource} 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover" 
-              loop 
-              muted 
-              playsInline
-              controls
-              autoPlay
-            >
-              Your browser does not support the video tag.
-            </video>
-          )}
-          <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
-            Live
-          </div>
+        <Image
+            src={`data:image/jpeg;base64,${frame}`}
+            alt={`Surveillance image for ${floor} Camera ${camNum}`}
+            layout="fill"
+            objectFit="cover"
+          />
         </div>
       </div>
       <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-full">

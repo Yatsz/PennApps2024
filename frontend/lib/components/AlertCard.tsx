@@ -7,6 +7,7 @@ interface AlertCardProps {
   floor: string
   severity: 'HIGH' | 'MEDIUM' | 'LOW'
   time_ago: string
+  frame: string
 }
 
 const severityConfig = {
@@ -57,12 +58,12 @@ function LowSeverityIcon() {
   )
 }
 
-export default function AlertCard({ id, camera_num, floor, severity, time_ago }: AlertCardProps) {
+export default function AlertCard({ id, camera_num, floor, severity, time_ago, frame }: AlertCardProps) {
   const { textColor, bgColor, borderColor, width, Icon } = severityConfig[severity]
   const { setSelectedAlert } = useAlert()
 
   const handleClick = () => {
-    setSelectedAlert({ id, camera_num, floor, severity, time_ago })
+    setSelectedAlert({ id, camera_num, floor, severity, time_ago, frame })
   }
 
   return (
