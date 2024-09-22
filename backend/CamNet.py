@@ -30,6 +30,8 @@ class CamNet:
         self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
         self.output_dir = "vids"
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
         for vid in os.listdir(self.output_dir):
             os.remove(os.path.join(self.output_dir, vid))
 
