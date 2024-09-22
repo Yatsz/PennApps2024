@@ -73,7 +73,7 @@ class AICamera:
             # save the image in /frames
 
             # Get the image embedding and probabilities
-            probs, image_embedding = self.get_embedding(image, texts=["a normal school scene", "violent threa knife"])
+            probs, image_embedding = self.get_embedding(image, texts=["a normal school scene", "violent threat knife or gun"])
 
             print(probs)
 
@@ -86,7 +86,7 @@ class AICamera:
             # print(np.array(image).tolist())
             t = str(float(time.time()))
 
-            print("Frame_time", t)
+            # print("Frame_time", t)
 
             image.save(f"frames/{camera_num}_{t}.jpg")
 
@@ -98,12 +98,15 @@ class AICamera:
                 documents=[str(camera_num)]
             )
 
-            if probs[1] > 0.75:
+            if probs[1] > 0.55:
                 print(f"THREAT DETECTED IN CAMERA {camera_num}")
-                res = gpt("Is this person's face covered? Is this person holding something that can be used as a weapon? Answer like this ['Yes', 'No'] :", [image])
+                res = gpt("Is this person's face covered? Is this person holding something that can be used as a weapon? Answer like this ['Yes', 'No'] :"
+                          , [image]
+                          , "gpt-4o"
+                          )
                 print(res)
 
-                print("Frame_time", t)
+                # print("Frame_time", t)
 
 
                 try:

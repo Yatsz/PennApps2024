@@ -91,8 +91,8 @@ prev_threat = None
 
 @app.get("/is_new_threat")
 async def is_new_threat():
-    print("Checking for new threat", flush=True)
-    logging.info("Checking for new threat")
+    # print("Checking for new threat", flush=True)
+    # logging.info("Checking for new threat")
     global prev_threat
     try:
         threats = pd.read_csv("threats.csv")
@@ -127,8 +127,8 @@ async def is_new_threat():
         most_recent_threat["vid_id"] = None
 
         # try: 
-        print("LOOKING for time", most_recent_threat["Timestamp"])
-        logging.info(f"Looking for time {most_recent_threat['Timestamp']}")
+        # print("LOOKING for time", most_recent_threat["Timestamp"])
+        # logging.info(f"Looking for time {most_recent_threat['Timestamp']}")
         most_recent_threat["frame"] = pil_image_to_base64_string(ret_image_from_time_and_cam(most_recent_threat["Timestamp"], cam_num))
         # except FileNotFoundError as e:
         #     print(f"Error: {e}")
@@ -136,8 +136,8 @@ async def is_new_threat():
 
         return most_recent_threat
     
-    print("edge case")
-    logging.info("Edge case")
+    # print("edge case")
+    # logging.info("Edge case")
     return False
 
 
