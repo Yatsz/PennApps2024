@@ -86,6 +86,8 @@ class AICamera:
             # print(np.array(image).tolist())
             t = str(float(time.time()))
 
+            print("Frame_time", t)
+
             image.save(f"frames/{camera_num}_{t}.jpg")
 
             self.vector_store.add(
@@ -100,6 +102,9 @@ class AICamera:
                 print(f"THREAT DETECTED IN CAMERA {camera_num}")
                 res = gpt("Is this person's face covered? Is this person holding something that can be used as a weapon? Answer like this ['Yes', 'No'] :", [image])
                 print(res)
+
+                print("Frame_time", t)
+
 
                 try:
                     old_df = pd.read_csv("threats.csv")
