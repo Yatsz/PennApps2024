@@ -107,6 +107,34 @@ class CamNet:
 
         return timestamps, results['documents'][0], results['metadatas'][0]
     
+    def get_vid_name(self, ts, cam_num):
+        vid_start_times = [
+            int(vid.split(".")[0]) for vid in os.listdir("./vids") if (vid.endswith(".mp4") and vid.startswith(str(cam_num)))
+        ]
+        vid_start_times.sort()
+
+        # Initialize variables
+        video_path = None
+
+        # Edge case: No videos available
+        if not vid_start_times:
+            print("No video files found in the './vids' directory.")
+            return None
+
+        # Find the video that contains the timestamp
+        for i in range(len(vid_start_times) - 1):
+            if vid_start_times[i] <= ts < vid_start_times[i + 1]:
+                video_path = f"./vids/{vid_start_times[i]}.mp4"
+                return video_path
+
+        # Check if timestamp is in the last video
+        if ts >= vid_start_times[-1]:
+            video_path = f"./vids/{vid_start_times[-1]}.mp4"
+            return video_path
+        else:
+            print("No video found for the given timestamp and camera number.")
+            return None
+    
             
 
 
