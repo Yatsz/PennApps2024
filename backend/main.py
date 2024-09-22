@@ -108,7 +108,7 @@ async def is_new_threat():
 
         # print("ID: ", str(net.get_vid_name(most_recent_threat["Timestamp"], cam_num)))
 
-        vid_id = str(int(cam_num)) + '_' + str(net.get_vid_name(most_recent_threat["Timestamp"], cam_num))
+        # vid_id = str(int(cam_num)) + '_' + str(net.get_vid_name(most_recent_threat["Timestamp"], cam_num))
 
         # convert to dictionary
         most_recent_threat = most_recent_threat.to_dict()
@@ -117,9 +117,14 @@ async def is_new_threat():
         most_recent_threat["severity"] = severity
         most_recent_threat.pop("Confidence")
 
-        most_recent_threat["vid_id"] = vid_id
+        most_recent_threat["vid_id"] = None
 
-        most_recent_threat["frame"] = pil_image_to_base64_string(ret_image_from_time_and_cam(most_recent_threat["Timestamp"], cam_num))
+        try: 
+
+            most_recent_threat["frame"] = pil_image_to_base64_string(ret_image_from_time_and_cam(most_recent_threat["Timestamp"], cam_num))
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+            most_recent_threat["frame"] = None
 
         return most_recent_threat
 
