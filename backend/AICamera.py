@@ -71,7 +71,7 @@ class AICamera:
             image = self.get_webcam_image()
 
             # Get the image embedding and probabilities
-            probs, image_embedding = self.get_embedding(image, texts=["a normal school scene", "violent threat"])
+            probs, image_embedding = self.get_embedding(image, texts=["a normal school scene", "violent threa knife"])
 
             print(probs)
 
@@ -90,7 +90,7 @@ class AICamera:
                 documents=[str(camera_num)]
             )
 
-            if probs[1] > 0.6:
+            if probs[1] > 0.75:
                 print(f"THREAT DETECTED IN CAMERA {camera_num}")
                 res = gpt("Is this person's face covered? Is this person holding something that can be used as a weapon? Answer like this ['Yes', 'No'] :", [image])
                 print(res)

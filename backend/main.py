@@ -9,7 +9,7 @@ from CamNet import CamNet
 
 
 # Initialize the camera network
-NUM_CAMS = 1
+NUM_CAMS = 2
 net = CamNet(NUM_CAMS)
 net.thread_record_and_monitor()
 
