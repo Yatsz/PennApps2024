@@ -28,7 +28,7 @@ yarn-error.log*
 # local env files
 .env*.local
 
-
+/public/banana.mp4
 # vercel
 .vercel
 
