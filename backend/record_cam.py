@@ -8,6 +8,11 @@ def record_webcam():
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    # delete all existing videos
+    for vid in os.listdir(output_dir):
+        os.remove(os.path.join(output_dir, vid))
+
+
     # Open the webcam (usually the first camera is index 0)
     cap = cv2.VideoCapture(0)
 
@@ -17,12 +22,13 @@ def record_webcam():
         return
 
     # Get the frame rate of the webcam
-    fps = int(cap.get(cv2.CAP_PROP_FPS))
-    if fps == 0:  # Fallback if FPS is not correctly retrieved
-        fps = 30
+    # fps = int(cap.get(cv2.CAP_PROP_FPS))
+    # if fps == 0:  # Fallback if FPS is not correctly retrieved
+    #     fps = 25
+    fps = 25
 
     # Set the duration for each video chunk (30 seconds)
-    chunk_duration = 30  # seconds
+    chunk_duration = 10  # seconds
     chunk_frames = chunk_duration * fps  # Number of frames per chunk
 
     # Frame width and height

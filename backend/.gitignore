@@ -1,2 +1,5 @@
 vids/*
 chroma_storage/*
+threats.csv
+__pycache__
+.env
