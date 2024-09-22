@@ -23,13 +23,46 @@ const mockAlerts: AlertData[] = [
 
 export default function Sidebar() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [alerts, setAlerts] = useState<AlertData[]>(mockAlerts)
+  const [alerts, setAlerts] = useState<AlertData[]>([])
   const [isFocused, setIsFocused] = useState(false)
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Searching for:', searchQuery)
-  }
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ txt_string: searchQuery }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      const currentTime = new Date();
+
+      const newAlerts: AlertData[] = data.map((item: any, index: number) => {
+        const timestamp = new Date(item.timestamp * 1000); // Convert Unix timestamp to Date
+        const timeDiff = Math.floor((currentTime.getTime() - timestamp.getTime()) / 60000); // Difference in minutes
+
+        return {
+          id: index + 1,
+          floor: `Floor ${item.camera_num}`, // Assuming floor is derived from camera number
+          camera_num: item.camera_num,
+          severity: item.severity as 'HIGH' | 'MEDIUM' | 'LOW',
+          time_ago: `${timeDiff}m ago`,
+        };
+      });
+
+      setAlerts(newAlerts);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
 
   return (
     <div className="w-[311px] h-screen bg-white flex flex-col">
