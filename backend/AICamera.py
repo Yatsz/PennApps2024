@@ -98,7 +98,7 @@ class AICamera:
                 try:
                     old_df = pd.read_csv("threats.csv")
                 except:
-                    old_df = pd.DataFrame(columns=["Timestamp", "Confidence", "GPT Response"])
+                    old_df = pd.DataFrame(columns=["Timestamp", "Confidence", "GPT Response", "Camera Number"])
 
                 new_df = pd.DataFrame([[time.time(), probs[1], res, camera_num]], columns=["Timestamp", "Confidence", "GPT Response", "Camera Number"])
                 
