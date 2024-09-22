@@ -4,6 +4,9 @@ from pydantic import BaseModel
 from typing import List, Optional
 import pandas as pd
 import json
+import io
+import base64
+from PIL import Image
 
 from CamNet import CamNet
 
@@ -55,6 +58,19 @@ def parse_metadata2(metadata, gpt_res):
         return "MEDIUM"
     else:
         return "LOW"
+    
+def pil_image_to_base64_string(image):
+    buffered = io.BytesIO()
+    image.save(buffered, format="PNG")
+    img_bytes = buffered.getvalue()
+    img_base64 = base64.b64encode(img_bytes).decode('utf-8')
+    return img_base64
+
+def ret_image_from_time_and_cam(time, cam_num):
+    frame_name = str(cam_num) + "_" + str(float(time)) + ".jpg"
+    img = Image.open("frames/" + frame_name)
+    print("frames/" + frame_name)
+    return img
 
 # Request model for search query
 class SearchQuery(BaseModel):
@@ -90,7 +106,7 @@ async def is_new_threat():
 
         cam_num = most_recent_threat["Camera Number"]
 
-        print("ID: ", str(net.get_vid_name(most_recent_threat["Timestamp"], cam_num)))
+        # print("ID: ", str(net.get_vid_name(most_recent_threat["Timestamp"], cam_num)))
 
         vid_id = str(int(cam_num)) + '_' + str(net.get_vid_name(most_recent_threat["Timestamp"], cam_num))
 
@@ -103,8 +119,10 @@ async def is_new_threat():
 
         most_recent_threat["vid_id"] = vid_id
 
+        most_recent_threat["frame"] = pil_image_to_base64_string(ret_image_from_time_and_cam(most_recent_threat["Timestamp"], cam_num))
+
         return most_recent_threat
-    
+
 
     
 
@@ -112,15 +130,18 @@ async def is_new_threat():
 @app.post("/search")
 async def search_text(query: SearchQuery):
     s = query.txt_string
-    options = net.query(s, n_results=30)
+    options = net.query(s, n_results=5)
+
+    # img = pil_image_to_base64_string(ret_image_from_time_and_cam(options[0][i], float(options[1][i]) ))
     
     o = []
     for i in range(len(options[0])):  # Fixed to iterate over the correct list length
         o.append({
             "timestamp": options[0][i], 
-            "camera_num": int(options[1][i]) + 1, 
+            "camera_num": float(options[1][i]) + 1, 
             "severity": parse_metadata(options[2][i]['threat']), 
-            "video_id": str(options[1][i]) + str(options[0][i])
+            "video_id": str(options[1][i]) + str(options[0][i]),
+            "frame" : pil_image_to_base64_string(ret_image_from_time_and_cam(options[0][i], int(options[1][i]) ))
         })
 
     return o

@@ -35,6 +35,11 @@ class CamNet:
         for vid in os.listdir(self.output_dir):
             os.remove(os.path.join(self.output_dir, vid))
 
+        if not os.path.exists("frames"):
+            os.makedirs("frames")
+        for frame in os.listdir("frames"):
+            os.remove(os.path.join("frames", frame))
+
         self.cams = [AICamera(i, self.vector_store, self.model, self.processor, self.device) for i in range(self.num_cams)]
 
         # print("exiting", self.num_cams)
@@ -102,14 +107,14 @@ class CamNet:
         timestamps = []
         for id_list in results['ids']:
             for id_str in id_list:
-                timestamp = int(float(id_str))
+                timestamp = float(id_str)
                 timestamps.append(timestamp)
 
         return timestamps, results['documents'][0], results['metadatas'][0]
     
     def get_vid_name(self, ts, cam_num):
         vid_start_times = [
-            int(vid.split(".")[0]) for vid in os.listdir("./vids") if (vid.endswith(".mp4"))
+            float(vid.split(".")[0] + vid.split(".")[1]) for vid in os.listdir("./vids") if (vid.endswith(".mp4"))
             #  and vid.startswith(str(int(cam_num))))
         ]
         vid_start_times.sort()

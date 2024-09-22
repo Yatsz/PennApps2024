@@ -4,3 +4,4 @@ threats.csv
 __pycache__
 .env
 myenv
+frames/*

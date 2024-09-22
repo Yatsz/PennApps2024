@@ -70,6 +70,8 @@ class AICamera:
             # Get an image from the webcam
             image = self.get_webcam_image()
 
+            # save the image in /frames
+
             # Get the image embedding and probabilities
             probs, image_embedding = self.get_embedding(image, texts=["a normal school scene", "violent threa knife"])
 
@@ -82,9 +84,13 @@ class AICamera:
             # print(type(emb))
             # Add the embeddings to the collection
             # print(np.array(image).tolist())
+            t = str(float(time.time()))
+
+            image.save(f"frames/{camera_num}_{t}.jpg")
+
             self.vector_store.add(
                 embeddings=[image_embedding],
-                ids=[str(time.time())],
+                ids=[t],
                 metadatas=[{"normal": probs[0], "threat": probs[1], "camera_num": camera_num}],
                 # documents=[np.array(image).tolist()]
                 documents=[str(camera_num)]
@@ -100,7 +106,7 @@ class AICamera:
                 except:
                     old_df = pd.DataFrame(columns=["Timestamp", "Confidence", "GPT Response", "Camera Number"])
 
-                new_df = pd.DataFrame([[time.time(), probs[1], res, camera_num]], columns=["Timestamp", "Confidence", "GPT Response", "Camera Number"])
+                new_df = pd.DataFrame([[t, probs[1], res, camera_num]], columns=["Timestamp", "Confidence", "GPT Response", "Camera Number"])
                 
                 old_df = old_df._append(new_df)
                 old_df.to_csv("threats.csv", index=False)
@@ -134,7 +140,7 @@ class AICamera:
 
             # Infinite loop to continuously record video chunks
             while True:
-                start_time = int(time.time())
+                start_time = float(time.time())
                 video_path = os.path.join(output_dir, f'{self.camera_num}_{start_time}.mp4')
                 out = cv2.VideoWriter(
                     video_path,
