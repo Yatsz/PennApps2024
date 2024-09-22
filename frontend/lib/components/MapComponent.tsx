@@ -1,57 +1,119 @@
-'use client'
-
-import React, { useState } from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 import { MapView, useMapData, useMap, Label, useEvent } from "@mappedin/react-sdk";
 import "@mappedin/react-sdk/lib/esm/index.css";
-
-interface CustomLabel {
-  target: any; // Using 'any' for simplicity, ideally this should be properly typed
-  text: string;
-}
+import { useAlert } from '../context/AlertContext';
+import SurveillanceVideo from './Surveillance';
 
 function MapContent() {
   const { mapView, mapData } = useMap();
-  const [clickLabels, setClickLabels] = useState<CustomLabel[]>([]);
+  const { selectedAlert, clearSelectedAlert } = useAlert();
+  const surveillanceRef = useRef<HTMLDivElement>(null);
 
-  useEvent("click", (event) => {
-    setClickLabels((prevLabels) => [
-      ...prevLabels,
-    ]);
-  });
+  const handleMapClick = useCallback((event: any) => {
+    const { labels } = event;
+    if (labels.length > 0) {
+      const clickedLabel = labels[0];
+      console.log("Clicked label:", clickedLabel);
+      
+      const poi = mapData.getByType("point-of-interest").find(p => p.name === clickedLabel.text);
+      console.log("Found POI:", poi);
+     
+      if (poi) {
+        mapView.Camera.focusOn(poi, {
+          maxZoomLevel: 22,
+          duration: 1000,
+          easing: "ease-in-out"
+        });
+      }
+    } else if (selectedAlert && !surveillanceRef.current?.contains(event.target)) {
+      clearSelectedAlert();
+    }
+  }, [mapView, mapData, selectedAlert, clearSelectedAlert]);
 
-  useEvent("hover", (event) => {
-    console.log("hover", event);
-  });
+  useEvent("click", handleMapClick);
 
-  useEvent("camera-change", (event) => {
-    console.log(
-      "camera-change",
-      event.bearing,
-      event.pitch,
-      event.zoomLevel,
-      event.center
-    );
-  });
+  useEffect(() => {
+    if (selectedAlert && mapData && mapView) {
+      const cameraName = `Cam${selectedAlert.camera_num}`;
+      const cameraPOI = mapData.getByType("point-of-interest").find(p => p.name === cameraName);
+      
+      if (cameraPOI) {
+        console.log(`Focusing on ${cameraName}`);
+        mapView.Camera.focusOn(cameraPOI, {
+          maxZoomLevel: 22,
+          duration: 1000,
+          easing: "ease-in-out"
+        });
+      } else {
+        console.log(`POI for ${cameraName} not found`);
+      }
+    }
+  }, [selectedAlert, mapData, mapView]);
 
-  useEvent("floor-change", (event) => {
-    console.log("floor-change", event.floor, event.reason);
-  });
+  if (!mapData) return null;
 
   return (
     <>
-      {mapData.getByType("space").map((space) => (
-        <Label key={space.id} target={space.center} text={space.name} />
+      {mapData.getByType("space").map((space, idx) => (
+        <Label
+          key={`space-${idx}`}
+          target={space.center}
+          text={space.name}
+          options={{
+            interactive: true,
+            appearance: {
+              marker: {
+                foregroundColor: {
+                  active: "green",
+                  inactive: "green",
+                },
+              },
+              text: {
+                foregroundColor: "green",
+              },
+            },
+          }}
+        />
       ))}
-      {clickLabels.map((label, idx) => (
-        <Label key={`click-${idx}`} {...label} />
+      {mapData.getByType("point-of-interest").map((poi, idx) => (
+        <Label
+          key={`poi-${idx}`}
+          target={poi.coordinate}
+          text={poi.name}
+          options={{
+            interactive: true,
+            appearance: {
+              marker: {
+                foregroundColor: {
+                  active: "dodgerblue",
+                  inactive: "dodgerblue",
+                },
+              },
+              text: {
+                foregroundColor: "dodgerblue",
+              },
+            },
+          }}
+        />
       ))}
+      {selectedAlert && (
+        <div 
+          ref={surveillanceRef}
+          className="absolute top-1/2 left-1/2 transform -translate-x-[107%] -translate-y-[49%] z-10 surveillance-container"
+        >
+          <SurveillanceVideo
+            floor={selectedAlert.floor}
+            camNum={selectedAlert.camera_num}
+            severity={selectedAlert.severity}
+            videoUrl="/banana.mp4" // Replace with actual video URL
+          />
+        </div>
+      )}
     </>
   );
 }
 
 export default function MapComponent() {
-  // See Demo API key Terms and Conditions
-  // https://developer.mappedin.com/v6/demo-keys-and-maps/
   const { isLoading, error, mapData } = useMapData({
     key: process.env.NEXT_PUBLIC_MAPPEDIN_KEY,
     secret: process.env.NEXT_PUBLIC_MAPPEDIN_SECRET,
@@ -67,8 +129,10 @@ export default function MapComponent() {
   }
 
   return mapData ? (
-    <MapView mapData={mapData}>
-      <MapContent />
-    </MapView>
+    <div className="relative w-full h-full">
+      <MapView mapData={mapData}>
+        <MapContent />
+      </MapView>
+    </div>
   ) : null;
 }
