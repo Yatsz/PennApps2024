@@ -5,7 +5,7 @@ from typing import List, Optional
 from CamNet import CamNet
 
 # Initialize the camera network
-NUM_CAMS = 3
+NUM_CAMS = 1
 net = CamNet(NUM_CAMS)
 net.thread_record_and_monitor()
 
@@ -35,23 +35,23 @@ async def get_anomalies():
 def parse_metadata(metadata):
     threat_level = metadata['threat']
     if threat_level > 0.8:
-        return "High"
+        return "HIGH"
     elif threat_level > 0.5:
-        return "Medium"
+        return "MEDIUM"
     else:
-        return "Low"
+        return "LOW"
 
 # Endpoint to post a search query
 @app.post("/search")
 async def search_text(query: SearchQuery):
     s = query.txt_string
-    options = net.query(s, n_results=10)
+    options = net.query(s, n_results=30)
     
     o = []
     for i in range(len(options[0])):  # Fixed to iterate over the correct list length
         o.append({
             "timestamp": options[0][i], 
-            "camera_num": int(options[1][i]), 
+            "camera_num": int(options[1][i]) + 1, 
             "severity": parse_metadata(options[2][i]), 
             "video_id": str(options[1][i]) + str(options[0][i])
         })
