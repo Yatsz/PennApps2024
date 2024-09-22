@@ -32,8 +32,8 @@ export function ThreatProvider({ children }: { children: ReactNode }) {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/is_new_threat`);
         const data = await response.json();
-        if (data !== false) {
-          setCurrentThreat(data);
+        if (data !== false && data.severity === "EXTREME") {
+        setCurrentThreat(data);
         }
       } catch (error) {
         console.error('Error checking for new threats:', error);

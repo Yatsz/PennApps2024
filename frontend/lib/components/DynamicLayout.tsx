@@ -15,14 +15,14 @@ export default function DynamicLayout({ children }: DynamicLayoutProps) {
         <div className="flex flex-grow">
           <div 
             className={`transition-all duration-300 ease-in-out ${
-              isSidebarOpen ? 'w-[calc(100%-969px)]' : 'w-0'
+              isSidebarOpen ? 'w-[calc(100%-1201px)]' : 'w-0'
             } overflow-hidden`}
           >
             {isSidebarOpen && <SideBarComponent />}
           </div>
           <div 
             className={`transition-all duration-300 ease-in-out ${
-              isSidebarOpen ? 'w-[969px]' : 'w-full'
+              isSidebarOpen ? 'w-[1201px]' : 'w-full'
             }`}
           >
             {children}

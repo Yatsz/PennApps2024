@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import AlertCard from './AlertCard'
+import Spinner from './spinner'
 
 interface AlertData {
   id: number
@@ -10,15 +11,17 @@ interface AlertData {
   frame: string
 }
 
-
-
 export default function Sidebar() {
   const [searchQuery, setSearchQuery] = useState('')
   const [alerts, setAlerts] = useState<AlertData[]>([])
   const [isFocused, setIsFocused] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false)
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setHasSearched(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, {
         method: 'POST',
@@ -36,12 +39,12 @@ export default function Sidebar() {
       const currentTime = new Date();
 
       const newAlerts: AlertData[] = data.map((item: any, index: number) => {
-        const timestamp = new Date(item.timestamp * 1000); // Convert Unix timestamp to Date
-        const timeDiff = Math.floor((currentTime.getTime() - timestamp.getTime()) / 60000); // Difference in minutes
+        const timestamp = new Date(item.timestamp * 1000);
+        const timeDiff = Math.floor((currentTime.getTime() - timestamp.getTime()) / 60000);
 
         return {
           id: index + 1,
-          floor: `Levine Hall Floor 1`, // Assuming floor is derived from camera number
+          floor: `Levine Hall Floor 1`,
           camera_num: item.camera_num,
           severity: item.severity as 'HIGH' | 'MEDIUM' | 'LOW',
           time_ago: `${timeDiff}m ago`,
@@ -53,6 +56,8 @@ export default function Sidebar() {
     } catch (error) {
       console.error('Error fetching search results:', error);
       // Handle error (e.g., show error message to user)
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,22 +119,36 @@ export default function Sidebar() {
           </form>
         </div>
         <div className="mt-[8px] text-[12px] text-black opacity-50 mb-[8px] font-normal">
-          {alerts.length} Search Results
+          {isLoading ? 'Searching...' : `${alerts.length} Search Results`}
         </div>
       </div>
       <div className="flex-grow overflow-y-auto">
         <div className="ml-[29px] mt-[16px] mb-[16px] space-y-4">
-          {alerts.map((alert) => (
-            <AlertCard
-              key={alert.id}
-              id={alert.id}
-              camera_num={alert.camera_num}
-              floor={alert.floor}
-              severity={alert.severity}
-              time_ago={alert.time_ago}
-              frame={alert.frame}
-            />
-          ))}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-full">
+              <Spinner />
+            </div>
+          ) : alerts.length > 0 ? (
+            alerts.map((alert) => (
+              <AlertCard
+                key={alert.id}
+                id={alert.id}
+                camera_num={alert.camera_num}
+                floor={alert.floor}
+                severity={alert.severity}
+                time_ago={alert.time_ago}
+                frame={alert.frame}
+              />
+            ))
+          ) : hasSearched ? (
+            <div className="text-center text-gray-500">
+              No results found
+            </div>
+          ) : (
+            <div className=" mt-[280px] ml-[40px]">
+              <p className="font-bold text-lg text-gray-700">Search a Description</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

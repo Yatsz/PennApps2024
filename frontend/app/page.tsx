@@ -50,7 +50,7 @@ export default function WatchfulAIPage() {
   }
 
   return (
-    <div className="w-[1280px] h-[832px] bg-[#134DAB] bg-opacity-10 relative">
+    <div className="w-[1512px] h-[945px] bg-[#134DAB] bg-opacity-10 relative">
       <header className="flex justify-between items-center p-[30px]">
         <div className="flex items-center space-x-2">
         <svg width="103" height="24" viewBox="0 0 103 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,7 +63,7 @@ export default function WatchfulAIPage() {
         {/* Animated SVGs */}
       <motion.div 
         className="absolute"
-        style={{ left: '65px', top: '261px', zIndex: 2 }}
+        style={{ left: '121.5px', top: '301px', zIndex: 2 }}
         initial="hidden"
         animate={showFirst ? "visible" : "hidden"}
         variants={popUpVariants}
@@ -73,7 +73,7 @@ export default function WatchfulAIPage() {
 
       <motion.div 
         className="absolute"
-        style={{ left: '134px', top: '338px', zIndex: 1 }}
+        style={{ left: '190.5px', top: '378px', zIndex: 1 }}
         initial="hidden"
         animate={showSecond ? "visible" : "hidden"}
         variants={popUpVariants}
@@ -83,7 +83,7 @@ export default function WatchfulAIPage() {
 
       <motion.div 
         className="absolute"
-        style={{ left: '998px', top: '620px', zIndex: 2 }}
+        style={{ left: '1054.5px', top: '660px', zIndex: 2 }}
         initial="hidden"
         animate={showThird ? "visible" : "hidden"}
         variants={popUpVariants}
@@ -107,7 +107,7 @@ export default function WatchfulAIPage() {
         </div>
       </header>
 
-      <div className="absolute" style={{ left: '948.78px', top: '223.62px' }}>
+      <div className="absolute" style={{ left: '1005.28px', top: '223.62px' }}>
       <svg width="91" height="91" viewBox="0 0 91 91" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M40.5792 78.3885C48.5016 77.5829 55.4516 74.1218 61.4294 68.0053C67.4071 61.8887 71.0062 54.6537 72.2266 46.3002L75.1714 26.1812L50.2341 12.4246L22.4003 18.4572L19.4556 38.5762C18.2326 46.9316 19.607 54.8958 23.5788 62.4686C27.5507 70.0414 33.2174 75.348 40.5792 78.3885ZM41.5929 71.4623C36.5022 69.0327 32.5265 65.1235 29.6656 59.7346C26.8048 54.3457 25.5104 48.6122 25.7824 42.5342L45.4066 45.4066L49.2083 19.4333L67.9112 29.7507L65.413 46.8189C65.3567 47.2036 65.2293 47.6903 65.0309 48.2789L45.4066 45.4066L41.5929 71.4623Z" fill="#134DAB"/>
 </svg>

@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 # Initialize the camera network
-NUM_CAMS = 2
+NUM_CAMS = 3
 net = CamNet(NUM_CAMS)
 net.thread_record_and_monitor()
 
@@ -72,7 +72,7 @@ def pil_image_to_base64_string(image):
     return img_base64
 
 def ret_image_from_time_and_cam(time, cam_num):
-    frame_name = str(cam_num) + "_" + str(float(time)) + ".jpg"
+    frame_name = str(int(cam_num)) + "_" + str(float(time)) + ".jpg"
     img = Image.open("frames/" + frame_name)
     print("frames/" + frame_name)
     return img
